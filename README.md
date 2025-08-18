@@ -123,7 +123,6 @@ Alguns prints das requisições durante os testes:
 ![POST 200](./docs/images/api-5.jpeg)
 ![GET por ID](./docs/images/api-6.jpeg)
 ![PUT 200](./docs/images/api-7.jpeg)
-![GET lista final](./docs/images/api-8.jpeg)
 
 ---
 
