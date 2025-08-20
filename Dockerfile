@@ -23,7 +23,7 @@ RUN mvn clean install -DskipTests
 FROM openjdk:17-jdk-slim
 
 # Expor a porta 8080
-EXPOSE 8080
+EXPOSE 8282
 
 # Defina o diretório de trabalho
 WORKDIR /app
