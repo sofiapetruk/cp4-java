@@ -195,7 +195,6 @@ cp4-java/
       test/
 ```
 
-Ao enviar o trabalho, incluir toda a pasta do projeto com todas as subpastas e arquivos.
 
 ###Link do Swagger
 https://cp4-java-1.onrender.com/swagger-ui/index.html
