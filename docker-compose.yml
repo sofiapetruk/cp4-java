@@ -12,9 +12,9 @@ services:
     ports:
       - "8282:8282"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@db:1521:XE
-      - SPRING_DATASOURCE_USERNAME=system
-      - SPRING_DATASOURCE_PASSWORD=oracle
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/cp4_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=mysql123
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=10
       - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=5
@@ -27,27 +27,29 @@ services:
     restart: unless-stopped
 
   db:
-    image: gvenzl/oracle-xe:latest
-    container_name: oracle-db
+    image: mysql:8.0
+    container_name: mysql-db
     ports:
-      - "1521:1521"
+      - "3306:3306"
     environment:
-      - ORACLE_PASSWORD=oracle
-      - ORACLE_DATABASE=XE
+      - MYSQL_ROOT_PASSWORD=mysql123
+      - MYSQL_DATABASE=cp4_db
+      - MYSQL_USER=cp4_user
+      - MYSQL_PASSWORD=cp4_password
     volumes:
-      - oracle-data:/opt/oracle/oradata
+      - mysql-data:/var/lib/mysql
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "sqlplus -L system/oracle@//localhost:1521/XE <<< 'SELECT 1 FROM DUAL;' | grep -q '1'"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmysql123"]
       interval: 30s
-      timeout: 20s
-      retries: 10
-      start_period: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     restart: unless-stopped
 
 volumes:
-  oracle-data:
+  mysql-data:
 
 networks:
   app-network:
