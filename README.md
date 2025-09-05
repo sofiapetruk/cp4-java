@@ -1,210 +1,187 @@
-## CP4 – API de Produtos (Spring Boot)
+# 📘 Projeto Java API + MySQL com Docker Compose
 
-Aplicação REST para cadastro de produtos, construída em Java com Spring Boot e persistência em Oracle Database. O projeto expõe um CRUD completo para a entidade `Produtos` e está documentado com OpenAPI/Swagger.
+# 👥 Membros da Equipe
 
-### IDE utilizada
-IntelliJ IDEA Community Edition.
+- **JULIA MONTEIRO** - RM: 557023
+- **LUCAS ASSIS FIALHO** - RM: 557884
+- **SOFIA ANDRADE PETRUK** - RM: 556585
 
-![IntelliJ](./docs/images/intellij.jpeg)
-
-### Configuração do Spring Initializr
-Projeto gerado com as seguintes opções:
-- Linguagem: Java
-- Build: Maven
-- Spring Boot: 3.5.4
-- Dependências: Spring Web, Spring Data JPA, Validation, Spring Boot DevTools, Lombok, Oracle Driver, Springdoc OpenAPI
-
-![Spring Initializr](./docs/images/spring-initializr.jpeg)
 
 ---
 
-### Tecnologias e dependências principais
-- Spring Boot Starter Web
-- Spring Boot Starter Data JPA
-- Spring Boot Starter Validation (Jakarta Bean Validation)
-- Hibernate ORM
-- Oracle JDBC (ojdbc11)
-- Lombok
-- Springdoc OpenAPI UI (Swagger UI)
+Este projeto consiste em uma aplicação **Java API** containerizada que se conecta a um banco de dados **MySQL**, ambos orquestrados com **Docker Compose**.
+
+
 
 ---
 
-### Modelagem
-Entidade `Produtos` com os campos:
-- `idProduto` (Long)
-- `name` (String)
-- `type` (String)
-- `sector` (String)
-- `size` (double)
-- `unitPrice` (double)
+## 🖥️ Arquitetura do Projeto
 
-DTOs:
-- `ProductRequest`: `name`, `type`, `sector`, `size`, `unitPrice`
-- `ProductResponse`: `idProduto`, `name`, `type`, `sector`, `size`, `unitPrice`
+A solução é composta por dois serviços principais:
+
+- **Java API Container** → Responsável pela aplicação desenvolvida em Java (Spring Boot)
+- **MySQL Database Container** → Banco de dados relacional utilizado pela aplicação
+
+Ambos são gerenciados pelo **Docker Compose**.
 
 ---
 
-### Endpoints (CRUD)
-Base URL: `http://localhost:8282`
-Recurso: `/products`
+## 🚀 Instruções de Uso
 
-- GET `/products` – Lista todos os produtos
-- GET `/products/{idProduct}` – Busca por ID
-- POST `/products` – Cria um novo produto
-- PUT `/products/{idProduct}` – Atualiza um produto existente
-- DELETE `/products/{idProduct}` – Remove um produto
+1. **Instale as dependências necessárias:**
+   - [Docker](https://docs.docker.com/get-docker/)
+   - [Docker Compose](https://docs.docker.com/compose/)
 
-Status codes observados:
-- 200 OK para buscas, criação e atualização
-- 204 No Content para exclusão
-- 404 Not Found quando o recurso não existe
+2. **Clone o repositório:**
+   ```bash
+   git clone <URL_DO_REPOSITORIO>
+   cd <PASTA_DO_PROJETO>
+   ```
 
-#### Exemplos
+3. **Verifique os arquivos principais:**
+   - `docker-compose.yml` → Serviços (API + banco MySQL), volumes e rede
+   - `Dockerfile` → Build da aplicação Java
+   - `application.properties` → Configurações da aplicação
 
-Listar todos:
-```bash
-curl -X GET http://localhost:8282/products
-```
+4. **Suba os serviços:**
+   ```bash
+   docker-compose up -d
+   ```
 
-Buscar por ID:
-```bash
-curl -X GET http://localhost:8282/products/1
-```
-
-Criar:
-```bash
-curl -X POST http://localhost:8282/products \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Banana",
-    "type": "Fruta",
-    "sector": "Setor de Frutas",
-    "size": 15.0,
-    "unitPrice": 12.5
-  }'
-```
-
-Resposta (exemplo):
-```json
-{
-  "idProduto": 1,
-  "name": "Banana",
-  "type": "Fruta",
-  "sector": "Setor de Frutas",
-  "size": 15.0,
-  "unitPrice": 12.5
-}
-```
-
-Atualizar:
-```bash
-curl -X PUT http://localhost:8282/products/1 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Maçã",
-    "type": "Fruta",
-    "sector": "Setor de Frutas",
-    "size": 10.0,
-    "unitPrice": 8.5
-  }'
-```
-
-Excluir:
-```bash
-curl -X DELETE http://localhost:8282/products/1
-```
-
-Alguns prints das requisições durante os testes:
-
-![GET lista 1](./docs/images/api-1.jpeg)
-![DELETE 204](./docs/images/api-2.jpeg)
-![GET lista 2](./docs/images/api-3.jpeg)
-![GET lista 3](./docs/images/api-4.jpeg)
-![POST 200](./docs/images/api-5.jpeg)
-![GET por ID](./docs/images/api-6.jpeg)
-![PUT 200](./docs/images/api-7.jpeg)
+5. **Acesse a aplicação:**
+   - **URL:** http://localhost:8282
+   - **Porta configurada:** 8282
 
 ---
 
-### Documentação OpenAPI/Swagger
-Após subir a aplicação, acesse:
-- Swagger UI: `http://localhost:8282/swagger-ui/index.html`
-- OpenAPI JSON: `http://localhost:8282/v3/api-docs`
+## 🛠️ Comandos Essenciais do Docker Compose
+
+### Subir containers em segundo plano
+```bash
+docker-compose up -d
+```
+
+### Parar e remover containers
+```bash
+docker-compose down
+```
+
+### Reconstruir a imagem da aplicação
+```bash
+docker-compose build app
+```
+
+### Ver logs da aplicação
+```bash
+docker-compose logs -f app
+```
+
+### Ver logs do banco
+```bash
+docker-compose logs -f db
+```
+
+### Listar containers ativos
+```bash
+docker ps
+```
 
 ---
 
-### Configuração de ambiente
-Arquivo `cp4-java/src/main/resources/application.properties`:
+## 📦 Processo de Deploy
+
+1. **Build da aplicação Java (se houver alterações no código):**
+   ```bash
+   docker-compose build app
+   ```
+
+2. **Subir os serviços (API + MySQL):**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Verificar se estão rodando:**
+   ```bash
+   docker-compose ps
+   ```
+
+4. **Testar a aplicação:**
+   ```bash
+   curl http://localhost:8282
+   ```
+
+---
+
+## 🐞 Troubleshooting Básico
+
+### Erro: Porta em uso (8282 ou 3306)
+- Verifique quais processos estão usando a porta
+- Altere as portas no `docker-compose.yml` se necessário
+
+### Erro de autenticação no MySQL
+- Confirme se `SPRING_DATASOURCE_USERNAME` e `SPRING_DATASOURCE_PASSWORD` estão corretos
+- Ajuste no `application.properties` ou nas variáveis de ambiente
+
+### API não conecta ao banco
+- Verifique se o banco está saudável:
+  ```bash
+  docker-compose ps
+  ```
+- Aguarde o healthcheck finalizar
+
+### Forçar rebuild e resetar volumes
+```bash
+docker-compose down -v
+docker-compose up --build
+```
+
+---
+
+## ⚙️ Configuração do application.properties
+
+Exemplo de configuração para conectar ao MySQL via Docker:
 
 ```properties
-spring.datasource.url=jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl
-spring.datasource.username=<usuario>
-spring.datasource.password=<senha>
-spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
-spring.jpa.hibernate.ddl-auto=create
-spring.jpa.database-platform=org.hibernate.dialect.OracleDialect
+# Database Configuration
+spring.datasource.url=jdbc:mysql://db:3306/nome_do_banco
+spring.datasource.username=root
+spring.datasource.password=senha_do_banco
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JPA/Hibernate Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+# Server Configuration
 server.port=8282
 ```
 
-Recomenda-se exportar usuário e senha por variáveis de ambiente ou arquivo `.env` próprio para o seu ambiente.
-
-Pré-requisitos:
-- Java 21
-- Maven 3.9+
-- Banco Oracle acessível e credenciais válidas
-
 ---
 
-### Como executar
-No diretório raiz do projeto:
+## 📂 Estrutura do Projeto
 
-```bash
-mvn -f cp4-java/pom.xml spring-boot:run
 ```
-
-Ou gerando o jar:
-
-```bash
-mvn -f cp4-java/pom.xml clean package
-java -jar cp4-java/target/*.jar
+projeto/
+├── src/
+│   └── main/
+│       ├── java/
+│       └── resources/
+│           └── application.properties
+├── docker-compose.yml
+├── Dockerfile
+└── README.md
 ```
 
 ---
 
-### Estrutura de pastas
+## ✅ Conclusão
 
-```
-cp4-java/
-  README.md
-  docs/
-    images/
-      intellij.jpeg
-      spring-initializr.jpeg
-      api-1.jpeg ... api-8.jpeg
-  cp4-java/
-    pom.xml
-    src/
-      main/
-        java/br/com/fiap/cp1/
-          controller/
-          dto/
-          entity/
-          repository/
-          service/
-        resources/application.properties
-      test/
-```
+Este projeto demonstra como utilizar **Docker Compose** para orquestrar uma aplicação Java API integrada a um banco MySQL, garantindo:
 
-
-###Link do Swagger
-https://cp4-java-1.onrender.com/swagger-ui/index.html
-
-### Link do Deploy
-https://cp4-java-1.onrender.com/products
+- Isolamento dos serviços
+- Comunicação via rede interna
+- Persistência de dados
+- Deploy simplificado
 
 ---
-
-### Licença
-Projeto acadêmico para fins educacionais.
-
-
